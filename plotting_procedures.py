@@ -1,20 +1,23 @@
 # Procedure for drawing a well formated graph
 def draw_graph(_ax, _title="", _xlabel="", _ylabel="", _fontsize=8, _hline=False, _hline_pos=0,
                _hline_color="black", _draw=False, _x=None, _y=None, _linewidth=1, _sci=True,
-               _grid=True, _bold=False,
+               _grid=True, _bold=False, _marker=False, _marker_style="o",
                _show_legend=False, _legend_label=None):
-    if _draw:
+    if _draw and _marker:
+        _ax.plot(_x, _y, linewidth = _linewidth, label=_legend_label, marker=_marker_style)
+    elif _draw:
         _ax.plot(_x, _y, linewidth = _linewidth, label=_legend_label)
-        
+
     if _bold:
         _ax.set_title(_title, fontsize = _fontsize + 2, fontweight = "bold")
     else:
-        _ax.set_title(_title, fontsize = _fontsize)
+        _ax.set_title(_title, fontsize = _fontsize + 2)
+
     _ax.set_xlabel(_xlabel, fontsize = _fontsize)
     _ax.set_ylabel(_ylabel, fontsize = _fontsize)
     
     if _show_legend:
-        _ax.legend()
+        _ax.legend(fontsize=_fontsize)
         
     if _grid:
         _ax.set_axisbelow(True)
