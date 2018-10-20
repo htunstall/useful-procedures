@@ -1,4 +1,7 @@
-# Procedure for drawing a well formated graph
+#================================================
+# Internally called procedures
+#================================================
+#   Procedure for drawing a well formated graph
 def draw_graph(_ax, _title, _xlabel, _ylabel, _fontsize, _hline, _hline_pos, 
                _hline_color, _x, _y, _linewidth, _sci, _grid, _bold, _marker, _marker_style,
                _show_legend, _legend_label):
@@ -31,7 +34,9 @@ def draw_graph(_ax, _title, _xlabel, _ylabel, _fontsize, _hline, _hline_pos,
         _ax.ticklabel_format(style = 'sci', axis = 'y', scilimits = (0,0), fontsize = _fontsize)
         _ax.yaxis.offsetText.set_fontsize(_fontsize)
 
-
+#================================================
+# Externally called Procedures
+#================================================
 # Draws the elements of one of the six subfigures contained within each page of the PDF file
 def plot_subfig(_axes, _row=None, _column=None, _title="", _xlabel="", _ylabel="", _fontsize=8, _hline=False,
                 _hline_pos=0, _hline_color="black", _x=None, _y=None, _linewidth=1, _sci=True, _draw=True,
@@ -62,3 +67,22 @@ def plot_subfig(_axes, _row=None, _column=None, _title="", _xlabel="", _ylabel="
                                va="top",
                                fontproperties=o_font)
         axis[row, column].axis("off")
+
+# Saves a figure using some defaults
+def save_fig(_fig, _filename, _path, _padding=3, _overwrite=False):
+    import os.path
+
+    # Make the figure look good
+    _fig.tight_layout(pad=_padding)
+
+    _fullpath = None
+    # If there's no extenstion, then add one
+    if not ".png" in _filename.lower() and not ".jpg" in _filename.lower() and not ".jpeg" in _filename.lower():
+       _filename += ".png"
+    # Create the fullpath
+    _fullpath = os.path.join(_path, (_filename))
+
+    if not os.path.isfile(_fullpath) or _overwrite:
+        _fig.savefig(_fullpath)
+    else:
+        print("\nThe graph '{}' was not saved, as it already exists.\n   If you wish to save with overwrite, pass _overwrite=True into plotting_procedures.save_fig().".format(_filename))
