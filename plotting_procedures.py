@@ -1,10 +1,12 @@
+from matplotlib.font_manager import FontProperties
 #================================================
 # Internally called procedures
 #================================================
 #   Procedure for drawing a well formated graph
 def draw_graph(_ax, _title, _xlabel, _ylabel, _fontsize, _hline, _hline_pos, 
                _hline_color, _x, _y, _linewidth, _sci, _grid, _bold, _marker, _marker_style,
-               _show_legend, _legend_label):
+               _show_legend, _legend_outside, _legend_label, _fancybox, _shadow, _ncol, _legend_monospace,
+               _legend_fontsize):
     if _marker:
         _ax.plot(_x, _y, linewidth=_linewidth, label=_legend_label, marker=_marker_style)
     else:
@@ -18,8 +20,15 @@ def draw_graph(_ax, _title, _xlabel, _ylabel, _fontsize, _hline, _hline_pos,
     _ax.set_xlabel(_xlabel, fontsize = _fontsize)
     _ax.set_ylabel(_ylabel, fontsize = _fontsize)
 
-    if _show_legend:
-        _ax.legend(fontsize=_fontsize)
+    o_font = FontProperties()
+    o_font.set_size(_legend_fontsize)
+    if _legend_monospace:
+        o_font.set_family("monospace")
+
+    if _show_legend and _legend_outside:
+        _ax.legend(fancybox=_fancybox, shadow=_shadow, ncol=_ncol, loc="upper center", bbox_to_anchor=(0.5, -0.1), prop=o_font)
+    elif _show_legend:
+        _ax.legend(fancybox=_fancybox, shadow=_shadow, ncol=_ncol, prop=o_font)
 
     if _grid:
         _ax.set_axisbelow(True)
@@ -40,8 +49,8 @@ def draw_graph(_ax, _title, _xlabel, _ylabel, _fontsize, _hline, _hline_pos,
 # Draws the elements of one of the six subfigures contained within each page of the PDF file
 def plot_subfig(_axes, _row=None, _column=None, _title="", _xlabel="", _ylabel="", _fontsize=8, _hline=False,
                 _hline_pos=0, _hline_color="black", _x=None, _y=None, _linewidth=1, _sci=True, _draw=True,
-                _grid=True, _bold=False, _marker=False, _marker_style="o", _show_legend=False,
-                _legend_label=None, _data=""):
+                _grid=True, _bold=False, _marker=False, _marker_style="o", _show_legend=False, _legend_outside=False,
+                _legend_label=None, _fancybox=True, _shadow=True, _ncol=1, _legend_monospace=False, _legend_fontsize=8, _data=""):
     _ax = None
     # If the row and column vars exist
     if _row != None and _column != None:
@@ -54,10 +63,11 @@ def plot_subfig(_axes, _row=None, _column=None, _title="", _xlabel="", _ylabel="
     if _draw:
         draw_graph(_ax, _title, _xlabel, _ylabel, _fontsize, _hline, _hline_pos,
                    _hline_color, _x, _y, _linewidth, _sci, _grid, _bold, _marker, _marker_style,
-                   _show_legend, _legend_label)
+                   _show_legend, _legend_outside, _legend_label, _fancybox, _shadow, _ncol, _legend_monospace,
+                   _legend_fontsize)
     else:
-        o_font = font_manager.FontProperties()
-        o_font.set_family(o_font)
+        o_font = FontProperties()
+#        o_font.set_family(o_font)
         o_font.set_family("monospace")
         axis[row, column].text(0,
                                1,
@@ -69,7 +79,7 @@ def plot_subfig(_axes, _row=None, _column=None, _title="", _xlabel="", _ylabel="
         axis[row, column].axis("off")
 
 # Saves a figure using some defaults
-def save_fig(_fig, _filename, _path, _padding=3, _overwrite=False):
+def save_fig(_fig, _filename, _path, _overwrite=False, _padding=3):
     import os.path
 
     # Make the figure look good
