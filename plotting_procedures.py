@@ -26,6 +26,10 @@ def draw_graph(_ax, _title, _xlabel, _ylabel, _fontsize, _hline, _hline_pos,
         o_font.set_family("monospace")
 
     if _show_legend and _legend_outside:
+        # Shrink the axis to acomidate the legend
+        box = _ax.get_position()
+        _ax.get_position([box.x0, box.y0, box.height * 0.1, box.width, box.height * 0.9])
+        # Draw the legend
         _ax.legend(fancybox=_fancybox, shadow=_shadow, ncol=_ncol, loc="upper center", bbox_to_anchor=(0.5, -0.1), prop=o_font)
     elif _show_legend:
         _ax.legend(fancybox=_fancybox, shadow=_shadow, ncol=_ncol, prop=o_font)
@@ -67,16 +71,9 @@ def plot_subfig(_axes, _row=None, _column=None, _title="", _xlabel="", _ylabel="
                    _legend_fontsize)
     else:
         o_font = FontProperties()
-#        o_font.set_family(o_font)
         o_font.set_family("monospace")
-        axis[row, column].text(0,
-                               1,
-                               _data,
-                               size=_fontsize - 2,
-                               ha="left",
-                               va="top",
-                               fontproperties=o_font)
-        axis[row, column].axis("off")
+        _ax.text(0, 1, _data, size=_fontsize - 2, ha="left", va="top", fontproperties=o_font)
+        _ax.axis("off")
 
 # Saves a figure using some defaults
 def save_fig(_fig, _filename, _path, _overwrite=False, _padding=3):
