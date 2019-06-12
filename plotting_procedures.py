@@ -44,7 +44,7 @@ def draw_graph(_ax, _title, _xlabel, _ylabel, _fontsize, _hline, _hline_pos,
         _ax.axhline(_hline_pos, color = _hline_color, linewidth = _linewidth)
 
     if _sci:
-        _ax.ticklabel_format(style = 'sci', axis = 'y', scilimits = (0,0), fontsize = _fontsize)
+        _ax.ticklabel_format(style = 'sci', axis = 'y', scilimits = (0,0))
         _ax.yaxis.offsetText.set_fontsize(_fontsize)
 
 #================================================
