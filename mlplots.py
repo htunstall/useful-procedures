@@ -23,7 +23,7 @@ def format_plot(ax, title, fontsize=16, factor=0.004):
     xlim      = ax[0].get_xlim()
     ylim      = ax[0].get_ylim()
     lim       = (ylim[0] + factor, ylim[1] - factor)
-    lim_width = lim[1] - lim[0]1G
+    lim_width = lim[1] - lim[0]
 
     # Draw the lines
     ax[0].plot(lim, lim, color="k") # label="$x = y$"
