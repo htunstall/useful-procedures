@@ -104,12 +104,13 @@ def files(regex):
     return files_to_plot
 #---------------------------------------------
 
-def get_min_values(files_to_plot):
+def get_min_values(files_to_plot, best_epochs):
     """
     Get the minimum value for each epoch and return a list of them.
     
     Where:
         files_to_plot: Is the output of the files definition above
+        best_epochs:   Is a list of epoch numbers to plot
     """
     list_min_values = []
     for filename, epoch in files_to_plot:
@@ -130,7 +131,7 @@ def get_min_values(files_to_plot):
     return np.array(min_values)
 #---------------------------------------------
 
-def plot_NN_performance(best_epochs, ax, min_value, _type):
+def plot_NN_performance(best_epochs, ax, min_value, _type, filename, epoch):
     """
     Plot the neural network data.
     
@@ -146,25 +147,24 @@ def plot_NN_performance(best_epochs, ax, min_value, _type):
     elif type(best_epochs) != list:
         raise TypeError("`best_epochs` should be an integer or a list!")
     
-    for best_epoch in best_epochs:
-        if int(epoch) == best_epoch:
-            # data: 0 = index; 1 = DFT; 2=NN
-            data      = np.loadtxt(filename, skiprows=1)
+    if int(epoch) in best_epochs:
+        # data: 0 = index; 1 = DFT; 2=NN
+        data      = np.loadtxt(filename, skiprows=1)
 
-            # Shift the axis to make them easier to read
-            x         = data[:,1] - min_value
-            y         = data[:,2] - min_value
+        # Shift the axis to make them easier to read
+        x         = data[:,1] - min_value
+        y         = data[:,2] - min_value
 
-            # Convert from Hartree -> eV
-            x         = x * ase.units.Hartree
-            y         = y * ase.units.Hartree
+        # Convert from Hartree -> eV
+        x         = x * ase.units.Hartree
+        y         = y * ase.units.Hartree
 
-            # Main data
-            ax[0].scatter(x, y, label=_type)
+        # Main data
+        ax[0].scatter(x, y, label=_type)
 
-            # Residuals
-            residuals = y - x
-            ax[1].scatter(x, residuals, marker="o", label="Residuals ({})".format(_type))
+        # Residuals
+        residuals = y - x
+        ax[1].scatter(x, residuals, marker="o", label="Residuals ({})".format(_type))
 #---------------------------------------------
 
 def plot_gap(filename, label, ax, colour):
