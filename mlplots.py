@@ -167,7 +167,7 @@ def plot_NN_performance(best_epochs, ax, min_value, _type, filename, epoch):
         ax[1].scatter(x, residuals, marker="o", label="Residuals ({})".format(_type))
 #---------------------------------------------
 
-def plot_gap(filename, label, ax, colour):
+def plot_gap(filename, label, ax, colour, cols):
     """
     Plot the GAP data.
     
@@ -176,16 +176,18 @@ def plot_gap(filename, label, ax, colour):
         label:    Is the legend label string
         ax:       Is a numpy aray of array of axes objects
         colour    Is  the colour of the plot points
+        cols:     Is a tuple containing the indexes of the two columns to plot
     """
+    x_index, y_index = cols
     # GAP data array
     # 0 = gap | 1 = DFT
     data = np.loadtxt(filename, skiprows=1, delimiter=",")
 
     # Shift the axis to make them easier to read
-    minimum = min([min(data[:,0]), min(data[:,1])])
+    minimum = min([min(data[:,x_index]), min(data[:,y_index])])
     # Divide by the number of atoms in the system
-    x         = (data[:,0] - minimum) / 216
-    y         = (data[:,1] - minimum) / 216
+    x         = (data[:,x_index] - minimum) / 216
+    y         = (data[:,y_index] - minimum) / 216
 
     # Main data
     ax[0].scatter(x, y, label=label, color=colour)
