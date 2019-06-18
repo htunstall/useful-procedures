@@ -31,17 +31,20 @@ def get_max_lims(ax_list, factor=0.04):
     return lim0, lim1
 #---------------------------------------------
 
-def format_plot(ax, title, lims, fontsize=16, match_residuals=False):
+def format_plot(ax, labels, lims, fontsize=16, match_residuals=False, legend_locs=(9,3), fig_letters=("a","b")):
     """
     Format the axes object to some specific standards.
     
     Where:
         ax:              A subplot list of matplotlib Axes
-        title:           The title of the Graph
+        labels:          A dictionary for the labels of the graph:
+                            title, y_label, y_label_residual, x_label
         lims:            A tuple of the maximum limits for the top/bottom graph
         fontsize:        The font size for all elements (note titles
                             are +2 larger)
         match_residuals: True makes the residual plots share a y axis
+        legend_locs:     A tuple containing the legend location for the graphs
+        fig_letters:     A tuple containing the letters for the figure
     """
     lim, residual_lim = lims
     
@@ -66,13 +69,17 @@ def format_plot(ax, title, lims, fontsize=16, match_residuals=False):
         ax[1].set_ylim(residual_lim)
 
     # Plot the legends
-    ax[0].legend(loc=9, ncol=2, fontsize=fontsize-2, frameon=True, fancybox=True, shadow=True)
-    ax[1].legend(loc=3,         fontsize=fontsize-2, frameon=True, fancybox=True, shadow=True)
+    ax[0].legend(loc=legend_locs[0], ncol=2, fontsize=fontsize-2, frameon=True, fancybox=True, shadow=True)
+    ax[1].legend(loc=legend_locs[1],         fontsize=fontsize-2, frameon=True, fancybox=True, shadow=True)
 
-    ax[0].set_title(title,                                      fontsize=fontsize+2)
-    ax[0].set_ylabel("NN Energy [eV/atom]",                     fontsize=fontsize+2)
-    ax[1].set_ylabel("NN Energy Deviation from\nDFT [eV/atom]", fontsize=fontsize)
-    ax[1].set_xlabel("DFT Energy [eV/atom]",                    fontsize=fontsize)
+    if "title" in labels:
+        ax[0].set_title(labels["title"],             fontsize=fontsize+2)
+    if "y_label" in labels:
+        ax[0].set_ylabel(labels["y_label"],          fontsize=fontsize+2)
+    if "y_label_residual" in labels:
+        ax[1].set_ylabel(labels["y_label_residual"], fontsize=fontsize)
+    if "x_label" in labels:
+        ax[1].set_xlabel(labels["x_label"],          fontsize=fontsize)
 
     # Change the tick label size
     ax[0].yaxis.set_tick_params(labelsize=fontsize)
@@ -83,8 +90,8 @@ def format_plot(ax, title, lims, fontsize=16, match_residuals=False):
     ax2_height = ulim - llim
 
     # Draw the figure letter
-    ax[0].text(lim[0] + (lim[1] - lim[0]) / 100, lim[1] - abs(lim[0] - lim[1])  / 20, "(a)", fontsize=26)
-    ax[1].text(lim[0] + (lim[1] - lim[0]) / 100, ulim   - ax2_height / 11, "(b)", fontsize=26)
+    ax[0].text(lim[0] + (lim[1] - lim[0]) / 100, lim[1] - abs(lim[0] - lim[1])  / 20, "({})".format(fig_letters[0]), fontsize=26)
+    ax[1].text(lim[0] + (lim[1] - lim[0]) / 100, ulim   - ax2_height / 11, "({})".format(fig_letters[1]), fontsize=26)
 #---------------------------------------------
 
 def files(regex):
@@ -167,7 +174,7 @@ def plot_NN_performance(best_epochs, ax, min_value, _type, filename, epoch):
         ax[1].scatter(x, residuals, marker="o", label="Residuals ({})".format(_type))
 #---------------------------------------------
 
-def plot_gap(filename, label, ax, colour, cols):
+def plot_gap(filename, label, ax, colour, cols, scale=1):
     """
     Plot the GAP data.
     
@@ -177,6 +184,8 @@ def plot_gap(filename, label, ax, colour, cols):
         ax:       Is a numpy aray of array of axes objects
         colour    Is  the colour of the plot points
         cols:     Is a tuple containing the indexes of the two columns to plot
+        scale:    Is a number to divide each value by when plotting (i.e 216 atoms, to make a per
+                     atom value on the axis)
     """
     x_index, y_index = cols
     # GAP data array
@@ -186,8 +195,8 @@ def plot_gap(filename, label, ax, colour, cols):
     # Shift the axis to make them easier to read
     minimum = min([min(data[:,x_index]), min(data[:,y_index])])
     # Divide by the number of atoms in the system
-    x         = (data[:,x_index] - minimum) / 216
-    y         = (data[:,y_index] - minimum) / 216
+    x         = (data[:,x_index] - minimum) / scale
+    y         = (data[:,y_index] - minimum) / scale
 
     # Main data
     ax[0].scatter(x, y, label=label, color=colour)
