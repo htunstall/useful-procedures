@@ -30,7 +30,7 @@ class Roman():
         """Convert a roman numeral to an integer.
         
         Arguments:
-            value -- the string to convert to an integer value        
+            roman -- the string to convert to an integer value        
         """        
         match = self.check_roman(roman)
         if match:
