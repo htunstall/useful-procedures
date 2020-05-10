@@ -10,8 +10,8 @@ import argparse
 class Roman():
     def __init__(self):
         self.roman_re = re.compile("^(M*)(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})$")
-        self.r2d      = {"M":1000, "D":500, "C":100, "L":50, "X":10, "V":5, "I":1, "":0}
-        self.dval     = [1000,  900, 500,  400, 100,   90,  50,   40,  10,    9,    5,    4,   1]
+        self.r2i      = {"M":1000, "D":500, "C":100, "L":50, "X":10, "V":5, "I":1, "":0}
+        self.ival     = [1000,  900, 500,  400, 100,   90,  50,   40,  10,    9,    5,    4,   1]
         self.rval     = [ "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V" , "IV", "I"]
     
     def check_roman(self, value):
@@ -37,7 +37,7 @@ class Roman():
             integer = 0
             for group in match.groups():
                 for i, char in enumerate(group):
-                    val = self.r2d[char]
+                    val = self.r2i[char]
                     if i > 0:
                         if pre_val < val:
                             integer += val - pre_val
@@ -60,9 +60,9 @@ class Roman():
         if type(integer) is int:
             index = 0
             while integer != 0:
-                if integer - self.dval[index] >= 0:
+                if integer - self.ival[index] >= 0:
                     roman += self.rval[index]
-                    integer = integer - self.dval[index]
+                    integer = integer - self.ival[index]
                 else:
                     index += 1
         else:
