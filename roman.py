@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
 """
 Created on Tue Mar  3 21:07:29 2020
 
-@author: Harry
+@author: Harry Tunstall
 """
 
 import re
+import argparse
 
 class Roman():
     def __init__(self):
@@ -15,50 +15,72 @@ class Roman():
         self.rval     = [ "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V" , "IV", "I"]
     
     def check_roman(self, value):
+        """Check if a string is a roman numeral.
+        
+        Arguments:
+            value -- the string to check
+        """
         match = self.roman_re.match(value.upper())
         if match and value != "":
             return match
         else:
             return False
+    
+    def roman2int(self, roman):
+        """Convert a roman numeral to an integer.
         
-    def roman2decimal(self, roman):
+        Arguments:
+            value -- the string to convert to an integer value        
+        """        
         match = self.check_roman(roman)
         if match:
-            decimal = 0
+            integer = 0
             for group in match.groups():
                 for i, char in enumerate(group):
                     val = self.r2d[char]
                     if i > 0:
                         if pre_val < val:
-                            decimal += val - pre_val
+                            integer += val - pre_val
                         else:
-                            decimal += pre_val
+                            integer += pre_val
                     if i == len(group)-1:
-                        decimal += val
+                        integer += val
                     pre_val = val
         else:
             raise ValueError("The input '{}' is not a roman numeral".format(value))
-        return decimal
+        return integer
     
-    def decimal2roman(self, decimal):
+    def int2roman(self, integer):
+        """Convert an integer to a roman numeral.
+        
+        Arguments:
+            integer -- the integer to convert
+        """
         roman = ""
-        if type(decimal) is int:
+        if type(integer) is int:
             index = 0
-            while decimal != 0:
-                if decimal - self.dval[index] >= 0:
+            while integer != 0:
+                if integer - self.dval[index] >= 0:
                     roman += self.rval[index]
-                    decimal = decimal - self.dval[index]
+                    integer = integer - self.dval[index]
                 else:
                     index += 1
         else:
-            raise ValueError("The value '{}' is not an integer that can be converted to roman numerals".format(decimal))
+            raise ValueError("The value '{}' is not an integer that can be converted to roman numerals".format(integer))
         return roman
-    
 
-# DEBUG
-print("Input:")
-value = input()
+#======================
+# Parser    
+#======================
+parser = argparse.ArgumentParser(description="A suite to convert between roman numerals and integers")
+group  = parser.add_mutually_exclusive_group()
+group.add_argument("--int",   metavar="i", type=int, nargs="?", help="An interger to convert to a roman numeral")
+group.add_argument("--roman", metavar="r", type=str, nargs="?", help="A roman numeral to convert to an integer")
 
-roman = Roman()
-
-print(roman.roman2decimal(value))
+args = parser.parse_args()
+if args.int:
+    roman = Roman()
+    print(roman.int2roman(args.int))
+elif args.roman:
+    roman = Roman()
+    print(roman.roman2int(args.roman))
