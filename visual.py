@@ -22,4 +22,4 @@ def h_line(_i=120, _symbol="-"):
 		_i      -- length of the line
 		_symbol -- the symbol to repeat _i times
 	"""
-    print(_symbol * _i + "\n")
+    print(_symbol * _i)
